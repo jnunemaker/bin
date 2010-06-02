@@ -15,4 +15,5 @@ Gem::Specification.new do |s|
   s.add_dependency              'mongo',          '~> 1.0.1'
   s.add_dependency              'activesupport',  '<= 2.3.8'
   s.add_development_dependency  'rspec',          '~> 1.3.0'
+  s.add_development_dependency  'timecop',        '>= 0.3.4'
 end
