@@ -15,8 +15,7 @@ describe Bin::Store do
   let(:collection)  { @collection }
 
   it "has a collection" do
-    store.collection.should be_instance_of(Mongo::Collection)
-    store.collection.name.should == 'bin_cache'
+    store.collection.should == collection
   end
 
   it "defaults expires_in to 1.year" do
