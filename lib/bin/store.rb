@@ -1,26 +1,28 @@
 # encoding: UTF-8
 module Bin
   class Store < Compatibility
-    attr_reader :collection
+    attr_reader :collection, :options
 
-    def initialize(collection)
-      @collection = collection
+    def initialize(collection, options={})
+      @collection, @options = collection, options
+    end
+
+    def expires_in
+      @expires_in ||= options[:expires_in] || 1.year
     end
 
     def write(key, value, options=nil)
       super do
-        doc = {:_id => key, :value => value}
-        if options && options.key?(:expires_in)
-          doc[:expires_at] = Time.now.utc + options[:expires_in]
-        end
+        expires = Time.now.utc + ((options && options[:expires_in]) || expires_in)
+        doc     = {:_id => key, :value => value, :expires_at => expires}
         collection.save(doc)
       end
     end
 
     def read(key, options=nil)
       super do
-        if doc = collection.find_one(:_id => key)
-          doc['value'] if fresh?(doc)
+        if doc = collection.find_one(:_id => key, :expires_at => {'$gt' => Time.now.utc})
+          doc['value']
         end
       end
     end
@@ -45,13 +47,13 @@ module Bin
 
     def increment(key, amount=1)
       super do
-        collection.update({:_id => key}, {'$inc' => {:value => amount}}, :upsert => true)
+        counter_key_upsert(key, amount)
       end
     end
 
     def decrement(key, amount=1)
       super do
-        collection.update({:_id => key}, {'$inc' => {:value => -amount.abs}}, :upsert => true)
+        counter_key_upsert(key, -amount.abs)
       end
     end
 
@@ -64,8 +66,12 @@ module Bin
     end
 
     private
-      def fresh?(doc)
-        doc['expires_at'].nil? || doc['expires_at'] > Time.now.utc
+      def counter_key_upsert(key, amount)
+        collection.update(
+          {:_id => key}, {
+            '$inc' => {:value => amount},
+            '$set' => {:expires_at => Time.now.utc + 1.year},
+          }, :upsert => true)
       end
   end
 end

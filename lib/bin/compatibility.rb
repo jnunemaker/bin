@@ -1,3 +1,4 @@
+# encoding: UTF-8
 module Bin
   class Compatibility < ActiveSupport::Cache::Store
     def increment(key, amount=1)

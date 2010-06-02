@@ -7,7 +7,7 @@ describe Bin::Store do
       collection.drop_indexes
     end
 
-    @collection = DB['active_support_cache']
+    @collection = DB['bin_cache']
     @store      = Bin::Store.new(@collection)
   end
 
@@ -16,7 +16,15 @@ describe Bin::Store do
 
   it "has a collection" do
     store.collection.should be_instance_of(Mongo::Collection)
-    store.collection.name.should == 'active_support_cache'
+    store.collection.name.should == 'bin_cache'
+  end
+
+  it "defaults expires_in to 1.year" do
+    store.expires_in.should == 1.year
+  end
+
+  it "can set default expires_in" do
+    Bin::Store.new(@collection, :expires_in => 5.minutes).expires_in.should == 5.minutes
   end
 
   describe "#write" do
@@ -31,6 +39,10 @@ describe Bin::Store do
 
     it "sets value key to value" do
       document['value'].should == 'bar'
+    end
+
+    it "sets expires in to default if not provided" do
+      document['expires_at'].to_i.should == (Time.now.utc + 1.year).to_i
     end
 
     it "sets expires_at if expires_in provided" do
