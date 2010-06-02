@@ -2,6 +2,11 @@
 
 ActiveSupport MongoDB Cache store.
 
+== Supports
+
+* Ruby 1.8.7 and Ruby 1.9.1.
+* ActiveSupport 2 and 3
+
 == Note on Patches/Pull Requests
 
 * Fork the project.
