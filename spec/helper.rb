@@ -1,6 +1,6 @@
-$:.unshift(File.expand_path('../../lib', __FILE__))
+gem 'activesupport', ENV['ACTIVE_SUPPORT_VERSION']
 
-gem 'activesupport', '<= 2.3.8'
+$:.unshift(File.expand_path('../../lib', __FILE__))
 
 require 'bin'
 require 'spec'
@@ -8,3 +8,5 @@ require 'timecop'
 
 connection = Mongo::Connection.new
 DB = connection.db('bin-store-test')
+
+puts "\nRunning specs against Active Support version: #{ActiveSupport::VERSION::STRING}\n"

@@ -1,6 +1,6 @@
 # encoding: UTF-8
 module Bin
-  class Store < ActiveSupport::Cache::Store
+  class Store < Compatibility
     attr_reader :collection
 
     def initialize(collection)
@@ -8,46 +8,55 @@ module Bin
     end
 
     def write(key, value, options=nil)
-      super
-      doc = {:_id => key, :value => value}
-      if options && options.key?(:expires_in)
-        doc[:expires_at] = Time.now.utc + options[:expires_in]
+      super do
+        doc = {:_id => key, :value => value}
+        if options && options.key?(:expires_in)
+          doc[:expires_at] = Time.now.utc + options[:expires_in]
+        end
+        collection.save(doc)
       end
-      collection.save(doc)
     end
 
     def read(key, options=nil)
-      super
-      if doc = collection.find_one(:_id => key)
-        doc['value'] if fresh?(doc)
+      super do
+        if doc = collection.find_one(:_id => key)
+          doc['value'] if fresh?(doc)
+        end
       end
     end
 
     def delete(key, options=nil)
-      super
-      collection.remove(:_id => key)
+      super do
+        collection.remove(:_id => key)
+      end
     end
 
     def delete_matched(matcher, options=nil)
-      super
-      collection.remove(:_id => matcher)
+      super do
+        collection.remove(:_id => matcher)
+      end
     end
 
     def exist?(key, options=nil)
-      super
-      collection.find(:_id => key).count > 0
+      super do
+        collection.find(:_id => key).count > 0
+      end
+    end
+
+    def increment(key, amount=1)
+      super do
+        collection.update({:_id => key}, {'$inc' => {:value => amount}}, :upsert => true)
+      end
+    end
+
+    def decrement(key, amount=1)
+      super do
+        collection.update({:_id => key}, {'$inc' => {:value => -amount.abs}}, :upsert => true)
+      end
     end
 
     def clear
       collection.remove
-    end
-
-    def increment(key, amount=1)
-      collection.update({:_id => key}, {'$inc' => {:value => amount}}, :upsert => true)
-    end
-
-    def decrement(key, amount=1)
-      collection.update({:_id => key}, {'$inc' => {:value => -amount.abs}}, :upsert => true)
     end
 
     def stats

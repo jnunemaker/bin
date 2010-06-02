@@ -3,8 +3,16 @@ require 'rake'
 require 'spec/rake/spectask'
 require File.expand_path('../lib/bin/version', __FILE__)
 
-Spec::Rake::SpecTask.new do |t|
-  t.ruby_opts << '-rubygems'
+namespace :spec do
+  Spec::Rake::SpecTask.new(:all) do |t|
+    t.ruby_opts << '-rubygems'
+    t.verbose = true
+  end
+end
+
+task :spec do
+  sh "ACTIVE_SUPPORT_VERSION='<= 2.3.8' rake spec:all"
+  sh "ACTIVE_SUPPORT_VERSION='>= 3.0.0.beta3' rake spec:all"
 end
 
 task :default => :spec
