@@ -39,7 +39,7 @@ module Bin
 
     def exist?(key, options=nil)
       super do
-        collection.find(:_id => key).count > 0
+        !read(key, options).nil?
       end
     end
 
