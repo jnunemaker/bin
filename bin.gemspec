@@ -10,7 +10,7 @@ Gem::Specification.new do |s|
   s.email        = ['nunemaker@gmail.com']
   s.version      = Bin::Version
   s.platform     = Gem::Platform::RUBY
-  s.files        = Dir.glob("{bin,lib}/**/*") + %w[LICENSE README.rdoc]
+  s.files        = Dir.glob("{lib,spec}/**/*") + %w[LICENSE Rakefile README.rdoc]
 
   s.add_dependency              'mongo',          '~> 1.0.1'
   s.add_dependency              'activesupport',  '<= 2.3.8'
