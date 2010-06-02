@@ -6,4 +6,5 @@ require 'mongo'
 module Bin
   autoload :Compatibility, 'bin/compatibility'
   autoload :Store,         'bin/store'
+  autoload :Version,       'bin/version'
 end
