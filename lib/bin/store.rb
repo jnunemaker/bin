@@ -7,25 +7,25 @@ module Bin
       @collection = collection
     end
 
-    def write(name, value, options=nil)
+    def write(key, value, options=nil)
       super
-      doc = {:_id => name, :value => value}
+      doc = {:_id => key, :value => value}
       if options && options.key?(:expires_in)
         doc[:expires_at] = Time.now.utc + options[:expires_in]
       end
       collection.save(doc)
     end
 
-    def read(name, options=nil)
+    def read(key, options=nil)
       super
-      if doc = collection.find_one(:_id => name)
+      if doc = collection.find_one(:_id => key)
         doc['value'] if fresh?(doc)
       end
     end
 
-    def delete(name, options=nil)
+    def delete(key, options=nil)
       super
-      collection.remove(:_id => name)
+      collection.remove(:_id => key)
     end
 
     def delete_matched(matcher, options=nil)
@@ -33,9 +33,9 @@ module Bin
       collection.remove(:_id => matcher)
     end
 
-    def exist?(name, options=nil)
+    def exist?(key, options=nil)
       super
-      collection.find(:_id => name).count > 0
+      collection.find(:_id => key).count > 0
     end
 
     def clear
