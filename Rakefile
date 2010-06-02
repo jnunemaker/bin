@@ -10,6 +10,7 @@ namespace :spec do
   end
 end
 
+desc 'Runs all specs against Active Support 2 and 3'
 task :spec do
   sh "ACTIVE_SUPPORT_VERSION='<= 2.3.8' rake spec:all"
   sh "ACTIVE_SUPPORT_VERSION='>= 3.0.0.beta3' rake spec:all"
