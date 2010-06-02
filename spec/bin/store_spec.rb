@@ -21,7 +21,6 @@ describe Bin::Store do
 
   describe "#write" do
     before(:each) do
-      Timecop.freeze(Time.utc(2009, 5, 10, 1, 1 ,1))
       store.write('foo', 'bar')
     end
     let(:document) { collection.find_one(:_id => 'foo') }
@@ -35,10 +34,8 @@ describe Bin::Store do
     end
 
     it "sets expires_at if expires_in provided" do
-      Timecop.freeze(Time.utc(2009, 5, 10, 1, 1, 1)) do
-        store.write('foo', 'bar', :expires_in => 5.seconds)
-      end
-      document['expires_at'].should == Time.utc(2009, 5, 10, 1, 1, 6)
+      store.write('foo', 'bar', :expires_in => 5.seconds)
+      document['expires_at'].to_i.should == (Time.now.utc + 5.seconds).to_i
     end
   end
 

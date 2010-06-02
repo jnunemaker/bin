@@ -4,7 +4,6 @@ $:.unshift(File.expand_path('../../lib', __FILE__))
 
 require 'bin'
 require 'spec'
-require 'timecop'
 
 connection = Mongo::Connection.new
 DB = connection.db('bin-store-test')
