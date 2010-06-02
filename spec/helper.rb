@@ -9,4 +9,4 @@ require 'timecop'
 connection = Mongo::Connection.new
 DB = connection.db('bin-store-test')
 
-puts "\nRunning specs against Active Support version: #{ActiveSupport::VERSION::STRING}\n"
+puts "\n--- Active Support Version: #{ActiveSupport::VERSION::STRING} ---\n"
