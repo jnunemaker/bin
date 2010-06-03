@@ -2,10 +2,6 @@
 
 ActiveSupport MongoDB Cache store.
 
-== Notes
-
-* Only tested with strings. Need to add object marshaling.
-
 == Supports
 
 * Ruby 1.8.7 and Ruby 1.9.1.

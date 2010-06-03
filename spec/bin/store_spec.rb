@@ -37,7 +37,18 @@ describe Bin::Store do
     end
 
     it "sets value key to value" do
+      store.read('foo').should == 'bar'
+    end
+
+    it "should marshal value by default" do
+      document['value'].should == Marshal.dump('bar')
+      document['raw'].should be_false
+    end
+
+    it "should be able to store in raw format" do
+      store.write('foo', 'bar', :raw => true)
       document['value'].should == 'bar'
+      document['raw'].should be_true
     end
 
     it "sets expires in to default if not provided" do
@@ -54,12 +65,18 @@ describe Bin::Store do
     before(:each) do
       store.write('foo', 'bar')
     end
+    let(:document) { collection.find_one(:_id => 'foo') }
 
     it "returns nil for key not found" do
       store.read('non:existent:key').should be_nil
     end
 
-    it "returns value key value for key found" do
+    it "returns unmarshalled value key value for key found" do
+      store.read('foo').should == 'bar'
+    end
+
+    it "returns raw value if document raw key is true" do
+      store.write('foo', 'bar', :raw => true)
       store.read('foo').should == 'bar'
     end
 

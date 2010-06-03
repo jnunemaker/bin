@@ -11,10 +11,12 @@ module Bin
       @expires_in ||= options[:expires_in] || 1.year
     end
 
-    def write(key, value, options=nil)
+    def write(key, value, options={})
       super do
         expires = Time.now.utc + ((options && options[:expires_in]) || expires_in)
-        doc     = {:_id => key, :value => value, :expires_at => expires}
+        raw     = !!options[:raw]
+        value   = raw ? value : Marshal.dump(value)
+        doc     = {:_id => key, :value => value, :expires_at => expires, :raw => raw}
         collection.save(doc)
       end
     end
@@ -22,7 +24,7 @@ module Bin
     def read(key, options=nil)
       super do
         if doc = collection.find_one(:_id => key, :expires_at => {'$gt' => Time.now.utc})
-          doc['value']
+          doc['raw'] ? doc['value'] : Marshal.load(doc['value'])
         end
       end
     end
@@ -70,7 +72,10 @@ module Bin
         collection.update(
           {:_id => key}, {
             '$inc' => {:value => amount},
-            '$set' => {:expires_at => Time.now.utc + 1.year},
+            '$set' => {
+              :expires_at => Time.now.utc + 1.year, 
+              :raw        => true
+            },
           }, :upsert => true)
       end
   end
