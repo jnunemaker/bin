@@ -1,4 +1,4 @@
 # encoding: UTF-8
 module Bin
-  Version = '0.5'
+  Version = '0.6'
 end
