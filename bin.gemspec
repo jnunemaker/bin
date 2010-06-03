@@ -13,6 +13,6 @@ Gem::Specification.new do |s|
   s.files        = Dir.glob("{lib,spec}/**/*") + %w[LICENSE Rakefile README.rdoc]
 
   s.add_dependency              'mongo',          '~> 1.0.1'
-  s.add_dependency              'activesupport',  '<= 2.3.8'
+  s.add_dependency              'activesupport',  '>= 2.3'
   s.add_development_dependency  'rspec',          '~> 1.3.0'
 end
