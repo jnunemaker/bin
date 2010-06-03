@@ -41,7 +41,7 @@ describe Bin::Store do
     end
 
     it "should marshal value by default" do
-      document['value'].should == Marshal.dump('bar')
+      document['value'].to_s.should == BSON::Binary.new(Marshal.dump('bar')).to_s
       document['raw'].should be_false
     end
 

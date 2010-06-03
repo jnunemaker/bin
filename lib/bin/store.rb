@@ -15,7 +15,7 @@ module Bin
       super do
         expires = Time.now.utc + ((options && options[:expires_in]) || expires_in)
         raw     = !!options[:raw]
-        value   = raw ? value : Marshal.dump(value)
+        value   = raw ? value : BSON::Binary.new(Marshal.dump(value))
         doc     = {:_id => key, :value => value, :expires_at => expires, :raw => raw}
         collection.save(doc)
       end
@@ -24,7 +24,7 @@ module Bin
     def read(key, options=nil)
       super do
         if doc = collection.find_one(:_id => key, :expires_at => {'$gt' => Time.now.utc})
-          doc['raw'] ? doc['value'] : Marshal.load(doc['value'])
+          doc['raw'] ? doc['value'] : Marshal.load(doc['value'].to_s)
         end
       end
     end
