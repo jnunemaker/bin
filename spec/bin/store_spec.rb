@@ -6,13 +6,10 @@ describe Bin::Store do
       collection.remove
       collection.drop_indexes
     end
-
-    @collection = DB['bin_cache']
-    @store      = Bin::Store.new(@collection)
   end
 
-  let(:store)       { @store }
-  let(:collection)  { @collection }
+  let(:collection)  { DB['bin_cache'] }
+  let(:store)       { Bin::Store.new(collection) }
 
   it "has a collection" do
     store.collection.should == collection
@@ -23,7 +20,7 @@ describe Bin::Store do
   end
 
   it "can set default expires_in" do
-    Bin::Store.new(@collection, :expires_in => 5.minutes).expires_in.should == 5.minutes
+    Bin::Store.new(collection, :expires_in => 5.minutes).expires_in.should == 5.minutes
   end
 
   describe "#write" do
