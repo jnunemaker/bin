@@ -56,6 +56,13 @@ describe Bin::Store do
       store.write('foo', 'bar', :expires_in => 5.seconds)
       document['expires_at'].to_i.should == (Time.now.utc + 5.seconds).to_i
     end
+
+    it "always sets key as string" do
+      store.write(:baz, 'wick')
+      doc = collection.find_one(:_id => 'baz')
+      doc.should_not be_nil
+      doc['_id'].should be_instance_of(String)
+    end
   end
 
   describe "#read" do
@@ -86,6 +93,10 @@ describe Bin::Store do
       store.write('foo', 'bar', :expires_in => 20.seconds)
       store.read('foo').should == 'bar'
     end
+
+    it "works with symbol" do
+      store.read(:foo).should == 'bar'
+    end
   end
 
   describe "#delete" do
@@ -97,6 +108,12 @@ describe Bin::Store do
       store.read('foo').should_not be_nil
       store.delete('foo')
       store.read('foo').should be_nil
+    end
+
+    it "works with symbol" do
+      store.read(:foo).should_not be_nil
+      store.delete(:foo)
+      store.read(:foo).should be_nil
     end
   end
 
@@ -133,6 +150,11 @@ describe Bin::Store do
     it "returns false if key not found" do
       store.exist?('not:found:key').should be_false
     end
+
+    it "works with symbol" do
+      store.exist?(:foo).should be_true
+      store.exist?(:notfoundkey).should be_false
+    end
   end
 
   describe "#clear" do
@@ -155,6 +177,11 @@ describe Bin::Store do
       store.increment('views', 2)
       store.read('views').should == 3
     end
+
+    it "works with symbol" do
+      store.increment(:views, 2)
+      store.read(:views).should == 2
+    end
   end
 
   describe "#decrement" do
@@ -164,6 +191,12 @@ describe Bin::Store do
       store.read('views').should == 3
       store.decrement('views', 2)
       store.read('views').should == 1
+    end
+
+    it "works with symbol" do
+      store.increment(:views, 2)
+      store.decrement(:views, 1)
+      store.read(:views).should == 1
     end
   end
 

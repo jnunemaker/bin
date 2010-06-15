@@ -12,6 +12,7 @@ module Bin
     end
 
     def write(key, value, options={})
+      key = key.to_s
       super do
         expires = Time.now.utc + ((options && options[:expires_in]) || expires_in)
         raw     = !!options[:raw]
@@ -23,7 +24,7 @@ module Bin
 
     def read(key, options=nil)
       super do
-        if doc = collection.find_one(:_id => key, :expires_at => {'$gt' => Time.now.utc})
+        if doc = collection.find_one(:_id => key.to_s, :expires_at => {'$gt' => Time.now.utc})
           doc['raw'] ? doc['value'] : Marshal.load(doc['value'].to_s)
         end
       end
@@ -31,7 +32,7 @@ module Bin
 
     def delete(key, options=nil)
       super do
-        collection.remove(:_id => key)
+        collection.remove(:_id => key.to_s)
       end
     end
 
@@ -69,11 +70,12 @@ module Bin
 
     private
       def counter_key_upsert(key, amount)
+        key = key.to_s
         collection.update(
           {:_id => key}, {
             '$inc' => {:value => amount},
             '$set' => {
-              :expires_at => Time.now.utc + 1.year, 
+              :expires_at => Time.now.utc + 1.year,
               :raw        => true
             },
           }, :upsert => true)
