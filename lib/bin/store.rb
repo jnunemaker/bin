@@ -25,9 +25,19 @@ module Bin
     def read(key, options=nil)
       super do
         if doc = collection.find_one(:_id => key.to_s, :expires_at => {'$gt' => Time.now.utc})
-          doc['raw'] ? doc['value'] : Marshal.load(doc['value'].to_s)
+          autoload_missing_constants do
+            doc['raw'] ? doc['value'] : Marshal.load(doc['value'].to_s)
+          end
         end
       end
+    end
+
+    def autoload_missing_constants
+      yield
+    rescue ArgumentError => error
+      lazy_load ||= Hash.new { |hash, hash_key| hash[hash_key] = true; false }
+      if error.to_s[/undefined class|referred/] && !lazy_load[error.to_s.split.last.sub(/::$/, '').constantize] then retry
+      else raise error end
     end
 
     def delete(key, options=nil)
