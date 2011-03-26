@@ -6,6 +6,6 @@ require 'bin'
 require 'spec'
 
 connection = Mongo::Connection.new
-DB = connection.db('bin-store-test')
+DB = connection.db('test')
 
 puts "\n--- Active Support Version: #{ActiveSupport::VERSION::STRING} ---\n"
