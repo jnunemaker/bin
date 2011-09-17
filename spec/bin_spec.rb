@@ -7,6 +7,10 @@ describe ActiveSupport::Cache::Bin do
   it "has a collection" do
     store.collection.should == collection
   end
+  
+  it "should also work with Bin::Store for backwards compat" do
+    Bin::Store.should == ActiveSupport::Cache::Bin
+  end
 
   it "defaults expires_in to 1.year" do
     store.expires_in.should == 1.year
