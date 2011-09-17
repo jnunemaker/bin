@@ -8,6 +8,7 @@ PATH
 GEM
   remote: http://rubygems.org/
   specs:
+    SystemTimer (1.2.1)
     activesupport (3.1.0)
       multi_json (~> 1.0)
     bson (1.3.1)
@@ -32,6 +33,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  SystemTimer
   bin!
   bson_ext
   i18n
