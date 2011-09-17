@@ -1,45 +1,7 @@
-require 'rubygems'
-require 'rake'
-require 'spec/rake/spectask'
-require File.expand_path('../lib/bin/version', __FILE__)
+require 'bundler'
+Bundler::GemHelper.install_tasks
 
-namespace :spec do
-  Spec::Rake::SpecTask.new(:all) do |t|
-    t.ruby_opts << '-rubygems'
-    t.verbose = true
-  end
-
-  task :as2 do
-    sh 'ACTIVE_SUPPORT_VERSION="<= 2.3.8" rake spec:all'
-  end
-
-  task :as3 do
-    sh 'ACTIVE_SUPPORT_VERSION=">= 3.0.0.beta3" rake spec:all'
-  end
-end
-
-desc 'Runs all specs against Active Support 2 and 3'
-task :spec do
-  Rake::Task['spec:as2'].invoke
-  Rake::Task['spec:as3'].invoke
-end
+require 'rspec/core/rake_task'
+RSpec::Core::RakeTask.new
 
 task :default => :spec
-
-desc 'Builds the gem'
-task :build do
-  sh "gem build bin.gemspec"
-end
-
-desc 'Builds and installs the gem'
-task :install => :build do
-  sh "gem install bin-#{Bin::Version}"
-end
-
-desc 'Tags version, pushes to remote, and pushes gem'
-task :release => :build do
-  sh "git tag v#{Bin::Version}"
-  sh "git push origin master"
-  sh "git push origin v#{Bin::Version}"
-  sh "gem push bin-#{Bin::Version}.gem"
-end
