@@ -97,6 +97,21 @@ describe Bin::Store do
     it "works with symbol" do
       store.read(:foo).should == 'bar'
     end
+
+    it "works with not yet loaded classes" do
+      class Klass
+        def initialize(str)
+          @str = str
+        end
+        def say_hello
+          @str
+        end
+      end
+      obj = Klass.new("hello\n")
+      store.write('foo', obj)
+      dump = store.read('foo')
+      dump.say_hello.should == "hello\n"
+    end
   end
 
   describe "#delete" do
