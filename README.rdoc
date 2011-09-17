@@ -7,6 +7,27 @@ ActiveSupport MongoDB Cache store.
 * Ruby 1.8.7 and 1.9.2+
 * ActiveSupport 3+
 
+== Installation and Usage
+
+    gem install bin
+
+    require 'bin'
+
+    collection = Mongo::Connection.new.db('testing')['testing']
+    collection.remove
+
+    bin = Bin::Store.new(collection)
+    bin.write('abc', 123)
+    pp bin.read('abc')
+
+    pp bin.read('def')
+    pp bin.fetch('def') { 456 }
+    pp bin.read('def')
+
+Using bin with rails is as easy as:
+
+    config.cache_store = :bin, Mongo::Connection.new.db('myapp')['cache']
+
 == Note on Patches/Pull Requests
 
 * Fork the project.
