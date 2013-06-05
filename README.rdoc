@@ -1,5 +1,7 @@
 = Bin
 
+DEAD AND UNMAINTAINED.
+
 ActiveSupport MongoDB Cache store.
 
 == Supports
