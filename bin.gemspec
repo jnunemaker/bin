@@ -11,8 +11,8 @@ Gem::Specification.new do |s|
   s.summary      = 'ActiveSupport MongoDB Cache store.'
   s.description  = 'ActiveSupport MongoDB Cache store.'
 
-  s.add_dependency 'mongo',         '~> 1.3.0'
-  s.add_dependency 'activesupport', '>= 3.0.0', '< 3.2.0'
+  s.add_dependency 'mongo',         '>= 1.3.0', '<1.7.0'
+  s.add_dependency 'activesupport', '>= 3.0.0', '< 3.3.0'
 
   s.files         = `git ls-files`.split("\n")
   s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
